@@ -5,3 +5,5 @@ There is a simple software which allows customers to login and order food for di
 Waitstaffs will be able to see the orders when ready due to color change and also see the orders, adjust the amount due, delete a order, take cash, see if the customer asked for help.
 
 Kitchen staff will see the order and see the time since order, will be able to notify waitstaff of the order being ready.
+
+I used a cloud based mongoDB for storing my items and orders and tables and all the details.
