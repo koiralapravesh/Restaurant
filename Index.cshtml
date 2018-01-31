@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+    var open_table_number = (int)ViewBag.OpenTable;
+}
+<style>
+    .item {
+        width: 50%;
+        background: darkgray;
+        margin:1px;
+    }
+</style>
+<h2>Online Restaurant</h2>
+<div class="container">
+    @*<div>
+        <a href="" class="btn btn-default item"><i class="fa fa-user"></i> Customer</a>
+    </div>*@
+    @if (User.IsInRole("Admin"))
+    {
+    <div>
+        <a href="/Home/TableGrid" class="btn btn-default item"><i class="fa fa-user-circle"></i> Wait Staff</a>
+    </div>
+    <div>
+        <a href="/Home/Kitchen" class="btn btn-default item"><i class="fa fa-cutlery"></i> Kitchen Staff</a>
+    </div>
+    <div>
+        <a href="/Home/ViewComplaints" class="btn btn-default item"><i class="fa fa-file"></i> View Complaints</a>
+    </div>
+    }
+    else
+    {
+        if (open_table_number == 0)
+        {
+            <script>document.write("All Tables Full. Please Try Again Later");</script>
+        }
+        else
+        {
+        <script>
+            window.location = "/Home/Customer?table="+@open_table_number;
+        </script>
+        }
+    }
+</div>

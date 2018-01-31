@@ -1,0 +1,92 @@
+﻿<style>
+    .innertable{
+        width:100%;
+    }
+    .ready_label {
+        background-color: #047410;
+        width: 8em;
+        height: 3em;
+        text-align: center;
+        position: relative;
+        padding-top: 0.7em;
+        border-radius: 10px;
+        color: white;
+    }
+    .ready_label:hover{
+        background-color:black;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $.post("/Home/getUpdates", {fromKitchen:true}, function (result) {
+            if (result.response == true) {
+                var table = result.status;
+                console.log(table);
+                var html_string = "";
+                for (var i = 0; i < table.length; i++) {
+                    var item = table[i];
+                    html_string += "<tr style='font-size:1.5em;background-color:lightgray;'><th style='text-align:center;'>Table Number : " + item.TableNumber + "</th></tr><tr>" +
+                        "<th style='border:solid 1px darkgray;'>"+
+                        "<table class='innertable'>" +
+                        "<tbody>" +
+                        "<tr><td>Time Passed : </td><td style='text-align:right;' data='interval' data-second='"+item.Order.secondOffset+"'></td></tr>" +
+                        "<tr><td style='border-bottom:solid 1px darkgreen;'>Ordered Items : </td></tr>" +
+                        "<tr><td>";
+                    for (var j = 0; j < item.Order.OrderItems.length; j++) {
+                        console.log(item);
+                        var oi = item.Order.OrderItems[j];
+                        var msg = item.Order.OrderMessages.find((itm) => itm.startsWith(oi)).split("♠")[1];
+                        if (msg == null || msg.length == 0) {
+                            html_string += "- " + oi+"<br>";
+                        }
+                        else {
+                            html_string += "- " + oi + "(" + msg+")<br>";
+                        }
+                    }
+                    html_string += "</td><td style='text-align:right;'><a href='#' onclick='ready_clicked(\"" + item.TableNumber +"\");'><label class='ready_label'>READY</label></a></td></tr></tbody>" +
+                        "</table>" +
+                        "</th></tr>";
+                }
+                $("#order_body").html(html_string);
+                var timer_counter = 1;
+                var pass_time_interval = setInterval(function () {
+                    var intervals = $("td[data='interval']");
+                    for (var i = 0; i < intervals.length; i++) {
+                        var td_item = $(intervals[i]);
+                        var s_offset = Number(td_item.attr("data-second"));
+                        //console.log(td_item);
+                        //update by 1 second
+                        td_item.attr("data-second", s_offset + 1);
+                        var hour = Math.floor(s_offset / 3600);
+                        var minute = Math.floor((s_offset / 60)%60);
+                        var second = Math.floor(s_offset % 60);
+                        td_item.html(hour + ":" + minute + ":" + second);
+                    }
+                    if (timer_counter % 30 == 0) {
+                        //location.reload();
+                    }
+                    timer_counter++;
+                }, 1000);
+            }
+            else {
+                var refresh_interval = setInterval(function () {
+                    location.reload();
+                }, 10000);
+            }
+        });
+    });
+    var ready_clicked = function (e) {
+        var tn = e;
+        $.post("/Home/ReadyClicked", { tn: tn }, function (result) {
+                location.reload();
+        });
+    };
+</script>
+<div class="par_container">
+    <h2>Kitchen</h2>
+    <table style="width:100%;">
+        <tbody id="order_body">
+            
+        </tbody>
+    </table>
+</div>

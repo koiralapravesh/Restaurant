@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" />
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <style>
+        .alert {
+            width: 100%;
+            height: 100vh;
+            background-color: #2121217d;
+            z-index: 2000;
+            text-align: center;
+            position: fixed;
+            top: 0px;
+        }
+        .alert_body {
+            width: 40%;
+            height: 10vh;
+            background-color: yellow;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+            top: 2em;
+            box-shadow: 10px 10px 10px black;
+            left: 35%;
+            border: solid 1px green;
+        }
+        .message_label {
+            position: relative;
+            top: 1.4em;
+        }
+        .dots{
+            position: relative;
+            top: 1.4em;
+        }
+        .help_circle {
+            width: 70px;
+            height: 11vh;
+            background-color: yellow;
+            border-radius: 50px;
+            position: fixed;
+            border: solid 1px black;
+            background-image: url(https://cdn0.iconfinder.com/data/icons/glyphpack/34/question-circle-128.png);
+            background-size: 100%;
+        }
+            .help_circle:hover {
+                background-color:lightblue;
+            }
+        .help_text {
+            position: relative;
+            top: 3vh;
+            left: 1.2em;
+            color: #080404;
+            font-family: monospace,Arial,Times New Roman;
+            font-weight: bold;
+            background: #ffff0082;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Online Restaurant", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    <li>@Html.ActionLink("Entertainment", "Entertainment", "Home")</li>
+                    <li><a href="#" onclick="call_help();"><label class="help_circle"><strong class="help_text">Help</strong></label></a></li>
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+        </footer>
+    </div>
+    <div class="alert" style="display:none;">
+        <div class="alert_body">
+            <label class="message_label"></label><label class="dots">...</label>
+        </div>
+    </div>
+    @*@Scripts.Render("~/bundles/jquery")*@
+    @*@Scripts.Render("~/bundles/bootstrap")*@
+    @RenderSection("scripts", required: false)
+    <script>
+        var call_help = function () {
+            var tn = $("#table_num").html()||"N/A";
+            $.post("/Home/NeedHelp", { table:tn}, function (result) {
+            });
+            $(".message_label").html("Your Help is on the way");
+            $(".alert").fadeIn();
+            var count = 0;
+            var timer = setInterval(function () {
+                if (count >= 10) {
+                    clearInterval(timer);
+                    $(".alert").fadeOut();
+                }
+                switch (count % 3) {
+                    case 0:
+                        $(".dots").html(".");
+                        break;
+                    case 1:
+                        $(".dots").html("..");
+                        break;
+                    case 2:
+                        $(".dots").html("...");
+                        break;
+                }
+                count++;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

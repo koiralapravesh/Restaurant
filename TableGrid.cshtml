@@ -1,0 +1,259 @@
+﻿<style>
+    .table1 {
+        background-color: #969698;
+        width: 100px;
+        height: 100px;
+        border-radius: 50px;
+        margin: 10px;
+        text-align: center;
+    }
+    .table1:hover{
+        border:solid 2px black;
+    }
+    table {
+        left: 20%;
+        position: relative;
+        top: 7vh;
+    }
+    .togo {
+        position: fixed;
+        top: 5em;
+    }
+    .help_label {
+        position: relative;
+        top: 1.8em;
+        background: yellow;
+        display:none;
+        border-radius:5px;
+    }
+    .order_label {
+        position: relative;
+        top: 2em;
+        background-color: lightcoral;
+        padding: 10px 8px 10px 8px;
+        display:none;
+        border-radius:10px;
+    }
+    .overlay {
+        width: 100%;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: rgba(221, 221, 221, 0.66);
+        z-index: 10000;
+    }
+    .overlay2 {
+        width: 100%;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: rgba(221, 221, 221, 0.66);
+        z-index: 100001;
+    }
+    .md_dialog {
+        background: darkgray;
+        width: 40%;
+        text-align: center;
+        padding: 1em;
+        position: relative;
+        top: 10vh;
+        left: 30%;
+        border-radius: 10px;
+        border: solid 1px yellow;
+    }
+    .cross:hover{
+        color:red;
+    }
+</style>
+<div class="togo">
+    <a href="#" class="btn btn-primary">To Go</a>
+</div>
+<div class="overlay" style="display:none;">
+    <input type="hidden" id="overlay_tn" value="" />
+    <div class="md_dialog">
+        <div class="md_heading">
+            <h3>Order Details</h3>
+        </div>
+        <div class="md_body">
+            <table style="position:inherit;width:100%;">
+                <tbody id="order_details_body"></tbody>
+            </table>
+        </div>
+        <div class="md_footer">
+            <a href="#" class="btn btn-default" onclick="clean_table();">Table Ready</a>
+            <a href="#" class="btn btn-default" onclick="save_order(this);">Save Order</a>
+            <a href="#" class="btn btn-default" onclick="close_overlay(this);">Close</a>
+        </div>
+    </div>
+</div>
+<div class="overlay2" id="complaint_div" style="display:none;">
+    <div class="md_dialog">
+        <div class="md_heading">
+            <h3>Register Complaint</h3>
+        </div>
+        <div class="md_body">
+            <input id="curr_table" type="hidden" />
+            <form id="complaint_form">
+                <input type="hidden" name="Comp" id="comp_item" />
+                <label>Staff Name</label>
+                <input name="Name" />
+                <label>Complain Details</label>
+                <textarea name="Details" rows="10"></textarea>
+            </form>
+        </div>
+        <div class="md_footer">
+            <a href="#" class="btn btn-default" onclick="submit_complaint();">Submit</a>
+            <a href="#" class="btn btn-default" onclick="close_complaint_dialog();">Cancel</a>
+        </div>
+    </div>
+</div>
+<div class="container1">
+    <table>
+        <tbody>
+            <tr>
+                <th><div class="table1" onclick="table_selected(this);"><label>1</label><label class="order_label"></label><label class="help_label">HELP</label></div></th>
+                <th><div class="table1" onclick="table_selected(this);"><label>2</label><label class="order_label"></label><label class="help_label">HELP</label></div></th>
+                <th><div class="table1" onclick="table_selected(this);"><label>3</label><label class="order_label"></label><label class="help_label">HELP</label></div></th>
+                <th><div class="table1" onclick="table_selected(this);"><label>4</label><label class="order_label"></label><label class="help_label">HELP</label></div></th>
+            </tr>
+            <tr>
+                <th><div class="table1" onclick="table_selected(this);"><label>5</label><label class="order_label"></label><label class="help_label">HELP</label></div></th>
+                <th><div class="table1" onclick="table_selected(this);"><label>6</label><label class="order_label"></label><label class="help_label">HELP</label></div></th>
+                <th><div class="table1" onclick="table_selected(this);"><label>7</label><label class="order_label"></label><label class="help_label">HELP</label></div></th>
+                <th><div class="table1" onclick="table_selected(this);"><label>8</label><label class="order_label"></label><label class="help_label">HELP</label></div></th>
+            </tr>
+            <tr>
+                <th><div class="table1" onclick="table_selected(this);"><label>9</label><label class="order_label"></label><label class="help_label">HELP</label></div></th>
+                <th><div class="table1" onclick="table_selected(this);"><label>10</label><label class="order_label"></label><label class="help_label">HELP</label></div></th>
+                <th><div class="table1" onclick="table_selected(this);"><label>11</label><label class="order_label"></label><label class="help_label">HELP</label></div></th>
+                <th><div class="table1" onclick="table_selected(this);"><label>12</label><label class="order_label"></label><label class="help_label">HELP</label></div></th>
+            </tr>
+            <tr>
+                <th><div class="table1" onclick="table_selected(this);"><label>13</label><label class="order_label"></label><label class="help_label">HELP</label></div></th>
+                <th><div class="table1" onclick="table_selected(this);"><label>14</label><label class="order_label"></label><label class="help_label">HELP</label></div></th>
+                <th><div class="table1" onclick="table_selected(this);"><label>15</label><label class="order_label"></label><label class="help_label">HELP</label></div></th>
+                <th><div class="table1" onclick="table_selected(this);"><label>16</label><label class="order_label"></label><label class="help_label">HELP</label></div></th>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<script>
+        var edit_order_tn = 0;
+        var remove_names = [];
+    $(document).ready(function () {
+        var status_interval = setInterval(function () {
+            $.post("/Home/getUpdates", {}, function (result) {
+                if (result.response == true) {
+                    result.status.forEach(function (item) {
+                        if (item.HelpRequested) {
+                            $($($(".table1>label:contains('"+item.TableNumber+"')")[0]).parent().children("label")[2]).show();
+                        }
+                        if (item.Order !== null) {
+                            var elm = $($($(".table1>label:contains('" + item.TableNumber + "')")[0]).parent().children("label")[1]);
+                            elm.data("order", item.Order);
+                            elm.data("table", item.TableNumber);
+                            elm.html("$ " + item.Order.total.toFixed(2));
+                            elm.show();
+                            if (item.KitchenReady === true) {
+                                elm.css({ "background-color": "blue", "color": "white" });
+                            }
+                        }
+                    });
+                }
+            });
+        }, 5000);
+
+        //when you hover on help, make it done button clickable
+        $(".help_label").hover(function () {
+            $(this).html("DONE");
+            $(this).off("click").on("click",function (e) {
+                var tn = $(this).parent().children("label:first-child").html();
+                var obj = $(this);
+                $.post("/Home/HelpDone", { table: tn }, function (result) {
+                    obj.html("HELP");
+                    obj.hide();
+                });
+                
+            });
+        }, function () {
+            $(this).html("HELP");
+            });
+        var old_color = "lightcoral";
+        //order click
+        $(".order_label").hover(function () {
+            old_color = $(this).css("background-color");
+            $(this).css("background-color", "darkgreen");
+            $(this).off("click").on("click", function () {
+                var curr_order = $(this).data("order");
+                var curr_table = $(this).data("table");
+                var html_string = "";
+                //curr_order.OrderItems.forEach(function (item) {
+                //    html_string += "<tr><th>"+item+"</th></tr>";
+                //});
+                for (var i = 0; i < curr_order.OrderItems.length; i++) {
+                    var item = curr_order.OrderItems[i];
+                    var msg = curr_order.OrderMessages.find((o) => o.startsWith(item)).split("♠")[1];
+                    //console.log(msg);
+                    if (msg == null || msg.length == 0) {
+                        html_string += "<tr style='border-bottom:solid 1px lightgray;'><th>" + item + "</th><th><a href='#' class='cross' style='margin-right:1.5em' onclick='receive_complaint(\""+item+"\",\""+curr_table+"\");'>COMP</a><a href='#' class='cross' onclick='remove_item(\""+curr_table+"\",\""+item+"\",this);'>X</a></th></tr>";
+                    }
+                    else {
+                        html_string += "<tr style='border-bottom:solid 1px lightgray;'><th>" + item + "(" + msg + ")" + "</th><th><a href='#' class='cross' style='margin-right:1.5em' onclick='receive_complaint(\""+item+"\",\""+curr_table+"\");'>COMP</a><a href='#' class='cross' onclick='remove_item(\"" + curr_table +"\",\""+item+"\",this);'>X</a></th></tr>";
+                    }
+                }
+                $("#order_details_body").html(html_string);
+                $("#overlay_tn").val($(this).parent().children("label:first").html());
+                $(".overlay").show();
+            });
+        }, function () {
+            $(this).css("background-color", old_color);
+        })
+        });
+    var receive_complaint = function (comp_item,curr_table) {
+        $("#comp_item").val(comp_item);
+        $("#curr_table").val(curr_table);
+        //show the complaint modal here
+        $("#complaint_div").show();
+    };
+    var submit_complaint = function () {
+        var curr_table = $("#curr_table").val();
+        var form_obj = $("#complaint_form").serializeArray().reduce((a, b) => { a[b.name] = b.value; return a; }, {});
+        $.post("/Admin/RegisterComplaint", { cmp: form_obj,table:curr_table }, function (result) {
+            if (result.response === true) {
+                $("#complaint_div").hide();
+                alert("Complaint Registered.");
+            }
+        });
+    };
+    var close_complaint_dialog = function () {
+        $("#complaint_div").hide();
+    };
+    var remove_item = function (tn,name,e) {
+        edit_order_tn = tn;
+        remove_names.push(name);
+        $(e).parent().parent().remove();
+    };
+    var save_order = function () {
+        $.post("/Home/UpdateOrder", { tn: edit_order_tn, names: remove_names }, function (result) {
+            location.reload();
+        });
+    };
+    var table_selected = function (e) {
+        //var table_number = $(e).children("label").html();
+        //window.location = "/Home/Customer?table=" + table_number;
+    };
+    var close_overlay = function (e) {
+        remove_names = [];
+        edit_order_tn = 0;
+        $(".overlay").hide();
+    };
+    var clean_table = function () {
+        var tn = Number($("#overlay_tn").val()) || 0;
+        $.post("/Home/cleanTable", { tn: tn }, function (result) { });
+        $($($(".table1>label:contains('" + tn + "')")[0]).parent().children("label")[1]).hide();
+        $($($(".table1>label:contains('" + tn + "')")[0]).parent().children("label")[2]).hide();
+        close_overlay();
+    };
+</script>

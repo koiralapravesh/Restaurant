@@ -1,0 +1,243 @@
+﻿@using Restaurant.Models
+@{ 
+    var foods = (List<foodModel>)ViewBag.FoodItems;
+    var categories = (List<string>)ViewBag.Categories;
+    var table_number = (string)ViewBag.Table;
+    var current_order = (OrderModel)ViewBag.Current_Order;
+    //var food_list = (List<foodModel>)ViewBag.food_list;
+    var scripts = new List<string>();
+}
+<style>
+    .table{
+        display:inline;
+    }
+    img {
+        position: relative;
+        top: 6px;
+    }
+    .order_div {
+        position: fixed;
+        top: 60px;
+        right: 30px;
+        border: solid 1px darkgray;
+        padding: 10px;
+    }
+    #order_subtotal:before{
+        content:'$ ';
+    }
+    #order_table_body > tr {
+        border-bottom: solid 1px darkgray;
+    }
+    tfoot{
+        color:red;
+    }
+    .overlay {
+        width: 100%;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: rgba(221, 221, 221, 0.66);
+        z-index:10000;
+    }
+    .order_checkout_modal {
+        background-color: #048404;
+        padding: 10px;
+        border-radius: 10px;
+        box-shadow: 10px 10px 10px lightgrey;
+        border: solid 3px darkred;
+        display: inline-block;
+        min-width:50%;
+    }
+    .order_checkout_modal_parent {
+        position: relative;
+        top: 30%;
+        text-align: center;
+    }
+    .heading {
+        margin: 0;
+        border-bottom: solid 1px darkred;
+    }
+    td:first-child {
+        text-align: right;
+        padding-right: 10px;
+        border-bottom: solid 1px darkgray;
+    }
+    td:nth-child(2) {
+        text-align: left;
+        border-bottom: solid 1px darkgray;
+    }
+    tbody > tr:last-child {
+        color: #830c0c;
+        font-weight: bold;
+    }
+    .footer {
+        margin-top: 10px;
+        border-top: solid 1px darkred;
+        padding-top: 10px;
+    }
+    .footer{
+        text-align:right;
+    }
+        .footer > a {
+            padding: 5px;
+            margin: 7px;
+        }
+    .footer-btn:hover {
+        background-color: #06095e;
+        box-shadow: none;
+        text-decoration: none;
+        color: white;
+    }
+    .footer_ddl {
+        width: 15%;
+        background-color: blue;
+        border: none;
+        box-shadow: 10px 10px 10px darkblue;
+        color:white;
+        display:none;
+    }
+    a.footer-btn {
+        background-color: blue;
+        box-shadow: 10px 10px 10px darkblue;
+        border-radius: 3px;
+    }
+    .stars{
+        font-size:3em;
+        color:black;
+    }
+    .whiteStar{
+        color:white;
+    }
+</style>
+<script src="~/Scripts/customer.min.js"></script>
+<label style="color:red;margin-top:2em;" id="today_special_label"></label>
+<div class="order_div">
+    <h3 style="color:green;margin: 0px;border-bottom: solid 1px green;">Your Order @@ Table # <strong id="table_num">@table_number</strong></h3>
+    <table>
+        <tbody id="order_table_body">
+            @if (current_order != null)
+            {
+                for (int i = 0; i < current_order.OrderItems.Count(); i++)
+                {
+                    var item = current_order.OrderItems[i];
+                    var curr_food = foods.First(f => f.Name == item);
+                    var msg = current_order.OrderMessages.First(m => m.StartsWith(item)).Split('♠')[1];
+                    if (!String.IsNullOrEmpty(msg))
+                    {
+                        msg = "<br><label style='font-size:0.7em'>(" + msg + ")</label>";
+                    }
+                            <text><tr data='@curr_food.IdString'><th>@item @Html.Raw(msg)</th><th>$ @curr_food.Price</th><th><a href='#' class='btn btn-danger' onclick='remove_from_cart(this);'>X</a></th></tr>"</text>
+                    scripts.Add("food_order_array.push(\""+curr_food.IdString+"\");food_category.push(\""+curr_food.Category+"\");food_order_msg.push(\""+(item+"♠"+msg)+"\");");
+                }
+                if(current_order.OrderItems.Count > 0)
+                {
+                    scripts.Add("$('#checkout_btn').fadeIn();");
+                    scripts.Add("$('#order_subtotal').html('"+current_order.total+"');");
+                }
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td>SubTotal : </td>
+                <td id="order_subtotal">0.00</td>
+            </tr>
+        </tfoot>
+    </table>
+    <a id="checkout_btn" href="#" style="display:none;" class="btn btn-success" onclick="cart_checkout();">Order</a>
+</div>
+@foreach(var c in categories)
+    {
+        <h2>@c</h2>
+    foreach(var f in foods.Where(f => f.Category == c))
+    {
+        <div class="menu_food">
+            <h3>@f.Name</h3>
+            <div>
+            <img src="@f.Picture" width="200" />
+                <table class="table table-condensed">
+                    <tbody>
+                        <tr>
+                            <th>Price</th>
+                            <th>$ @f.Price</th>
+                        </tr>
+                        <tr>
+                            <th>Calories</th>
+                            <th>@f.Calories</th>
+                        </tr>
+                        <tr>
+                            <th>Description</th>
+                            <th>@f.Description</th>
+                        </tr>
+                        <tr>
+                            <th>Message to Staff</th>
+                            <th><input placeholder="Input your message ... "/></th>
+                        </tr>
+                    </tbody>
+                </table>
+                <a href="#" class="btn btn-warning" onclick="add_to_order('@f.IdString','@f.Name','@f.Price','@f.Category',this);">Add to Order</a>
+            </div>
+        </div>
+    }
+}
+<div class="overlay" style="display:none;">
+    <div class="order_checkout_modal_parent">
+        <div class="order_checkout_modal">
+            <div class="rating" style="display:none;">
+                <h2>Your Help is on the way ...</h2><br />
+                <h4>Please Rate our Service</h4>
+                <div class="stars">
+                    <i class="fa fa-star" data-val="1"></i>
+                    <i class="fa fa-star" data-val="2"></i>
+                    <i class="fa fa-star" data-val="3"></i>
+                    <i class="fa fa-star" data-val="4"></i>
+                    <i class="fa fa-star" data-val="5"></i>
+                </div>
+                <div>
+                    <label>Your Random Number for Prize is : <strong id="rn_str">(click rating to reveal)</strong></label><br />
+                    <label style="color:red;" id="prize_label"></label>
+                </div>
+            </div>
+            <div class="heading">
+                <h2>Check Out</h2>
+            </div>
+            <div class="md_body">
+                <table style="margin-left:30%;">
+                    <tbody>
+                        <tr>
+                            <td>SubTotal</td>
+                            <td id="order_checkout_st"></td>
+                        </tr>
+                        <tr>
+                            <td>Tax</td>
+                            <td id="order_checkout_tax"></td>
+                        </tr>
+                        <tr>
+                            <td>Tips</td>
+                            <td id="order_checkout_tips"></td>
+                        </tr>
+                        <tr>
+                            <td>Total</td>
+                            <td id="order_checkout_total"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <label id="split_label" style="display:none;color:white;"></label>
+            </div>
+            <div class="footer">
+                <input id="custom_tips" type="number" max="100" min="0" style="display:none;background-color: blue;color: white;font-size: 1em;height: 5vh;position: relative;top: 0.3em;width: 3.8em;" oninput="custom_tips(this);" value="0"/>
+                <select class='footer_ddl' onchange="tips_selected(this);"><option value='10'>10%</option><option value='15'>15%</option><option value='20'>20%</option><option value='C'>Other</option></select>
+                <a href="#" class="footer-btn" onclick="tips_payment(this);">Tips ✔</a>
+                <select class='footer_ddl' onchange="split_selected(this);"><option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option></select>
+                <a href="#" class="footer-btn" onclick="split_payment(this);">Split Payment <i class="fa fa-chain-broken"></i></a>
+                <a href="#" class="footer-btn" onclick="pay_cash();">Pay by Cash <i class="fa fa-money"></i></a>
+                <a href="#" class="footer-btn" onclick="pay_cash();">Pay by Credit Card <i class="fa fa-credit-card"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        @Html.Raw(String.Join("", scripts));
+    });
+</script>
